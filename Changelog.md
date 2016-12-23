@@ -1,3 +1,7 @@
+
+# 4.0.6
+- watchOS 2+ support
+
 # 4.0.0
 
 - Updated to Swift 3.0
