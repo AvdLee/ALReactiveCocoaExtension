@@ -1,3 +1,6 @@
+# 4.1.0
+- Using Moya 8.0.0
+- Using ReactiveSwift 1.0.0
 
 # 4.0.6
 - watchOS 2+ support

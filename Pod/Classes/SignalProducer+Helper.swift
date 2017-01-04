@@ -77,7 +77,7 @@ public extension SignalProducer {
 public extension Signal {
     
     func toSignalProducer() -> SignalProducer<Value, Error> {
-        return SignalProducer(signal: self)
+        return SignalProducer(self)
     }
     
 }

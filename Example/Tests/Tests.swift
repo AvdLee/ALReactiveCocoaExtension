@@ -64,11 +64,3 @@ class Tests: XCTestCase {
     }
     
 }
-
-extension SignalProducerProtocol {
-    func flatMapErrorToNSError() -> SignalProducer<Value, NSError> {
-        return flatMapError { (error) -> SignalProducer<Value, NSError> in
-            return SignalProducer(error: error as NSError)
-        }
-    }
-}
