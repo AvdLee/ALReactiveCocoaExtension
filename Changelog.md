@@ -1,3 +1,7 @@
+# 4.1.1
+- Fix for ReactiveSwift. onStarted is now called onStarting and uses the correct method of ReactiveSwift
+- Readme updated
+
 # 4.1.0
 - Using Moya 8.0.0
 - Using ReactiveSwift 1.0.0

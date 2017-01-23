@@ -8,7 +8,7 @@
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
-The pod includes extensions for `RACSignal` and adds replacements for the `RAC` and `RACObserve` macros we're used to in Objective-C.
+The pod includes extensions for `SignalProducer`.
 
 ### SignalProducer extension
 This pod includes an extension for the new `SignalProducer`. This brings the methods we're familiar with from earlier versions of ReactiveCocoa.
@@ -17,7 +17,7 @@ This pod includes an extension for the new `SignalProducer`. This brings the met
 let producer = SignalProducer<String, NSError>(value: "testValue")
     
 // Prints "producer started!"
-producer.onStarted { () -> () in
+producer.onStarting { () -> () in
     print("producer started!")
 }.start()
     
@@ -44,7 +44,7 @@ errorProducer.onError { (error) -> () in
 ```
 
 ## Requirements
-- This pod requires `ReactiveCocoa 4.2.0 and up`
+- This pod requires `ReactiveCocoa 5.0.0 and up`
 - Swift 3.0
 - iOS 8+
 - tvOS 9+

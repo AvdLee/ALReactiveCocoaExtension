@@ -29,8 +29,13 @@ private extension SignalProducerProtocol  {
 }
 
 public extension SignalProducerProtocol {
+    @available(*, deprecated, renamed: "onStarting(_:)")
     open func onStarted(_ callback:@escaping () -> ()) -> SignalProducer<Value, Error> {
-        return self.on(started: callback)
+        return onStarting(callback)
+    }
+    
+    open func onStarting(_ callback:@escaping () -> ()) -> SignalProducer<Value, Error> {
+        return self.on(starting: callback)
     }
     
     open func onError(_ callback:@escaping (_ error:Error) -> () ) -> SignalProducer<Value, Error> {
