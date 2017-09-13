@@ -10,64 +10,63 @@ import Foundation
 import ReactiveSwift
 import enum Result.NoError
 
-public enum ALCastError : Error {
+public enum ALCastError : Swift.Error {
     case couldNotCastToType
 }
 
-private extension SignalProducerProtocol  {
+private extension SignalProducer  {
     func mapToType<U>() -> SignalProducer<U, ALCastError> {
-        return flatMapError({ (_) -> SignalProducer<Value, ALCastError> in
-            return SignalProducer(error: ALCastError.couldNotCastToType)
-        }).flatMap(.concat) { object -> SignalProducer<U, ALCastError> in
-            if let castedObject = object as? U {
-                return SignalProducer(value: castedObject)
-            } else {
-                return SignalProducer(error: ALCastError.couldNotCastToType)
+        return flatMapError({ (error) -> SignalProducer<Value, ALCastError> in
+                return SignalProducer<Value, ALCastError>(error: ALCastError.couldNotCastToType)
+            })
+            .flatMap(FlattenStrategy.concat) { (object) -> SignalProducer<U, ALCastError> in
+                if let castedObject = object as? U {
+                    return SignalProducer<U, ALCastError>(value: castedObject)
+                } else {
+                    return SignalProducer<U, ALCastError>(error: ALCastError.couldNotCastToType)
+                }
             }
-        }
     }
 }
 
-public extension SignalProducerProtocol {
+public extension SignalProducer {
     @available(*, deprecated, renamed: "onStarting(_:)")
-    open func onStarted(_ callback:@escaping () -> ()) -> SignalProducer<Value, Error> {
+    public func onStarted(_ callback:@escaping () -> ()) -> SignalProducer<Value, Error> {
         return onStarting(callback)
     }
     
-    open func onStarting(_ callback:@escaping () -> ()) -> SignalProducer<Value, Error> {
+    public func onStarting(_ callback:@escaping () -> ()) -> SignalProducer<Value, Error> {
         return self.on(starting: callback)
     }
     
-    open func onError(_ callback:@escaping (_ error:Error) -> () ) -> SignalProducer<Value, Error> {
+    public func onError(_ callback:@escaping (_ error:Error) -> () ) -> SignalProducer<Value, Error> {
         return self.on(failed: { (error) -> () in
             callback(error)
         })
     }
     
-    open func onNext(_ nextClosure:@escaping (Value) -> ()) -> SignalProducer<Value, Error> {
+    public func onNext(_ nextClosure:@escaping (Value) -> ()) -> SignalProducer<Value, Error> {
         return self.on(value: nextClosure)
     }
     
-    open func onCompleted(_ nextClosure:@escaping () -> ()) -> SignalProducer<Value, Error> {
+    public func onCompleted(_ nextClosure:@escaping () -> ()) -> SignalProducer<Value, Error> {
         return self.on(completed: nextClosure)
     }
     
-    open func onNextAs<U>(_ nextClosure:@escaping (U) -> ()) -> SignalProducer<U, ALCastError> {
+    public func onNextAs<U>(_ nextClosure:@escaping (U) -> ()) -> SignalProducer<U, ALCastError> {
         return self.mapToType().on(value: nextClosure)
     }
     
     /// This function ignores any parsing errors
-    open func startWithNextAs<U>(_ nextClosure:@escaping (U) -> ()) -> Disposable {
+    public func startWithNextAs<U>(_ nextClosure:@escaping (U) -> ()) -> Disposable {
         return mapToType()
             .flatMapError { (object) -> SignalProducer<U, NoError> in
-                return SignalProducer.empty
+                return SignalProducer<U, NoError>.empty
             }.startWithValues(nextClosure)
     }
     
     public func flatMapErrorToNSError() -> SignalProducer<Value, NSError> {
-        return flatMapError({
-            SignalProducer(error: $0 as NSError)
-        })
+        return flatMapError({ return SignalProducer<Value, NSError>(error: $0 as NSError) })
     }
 }
 
